@@ -23,11 +23,10 @@ public class Person implements Serializable {
 
     @Id
     private String email;
+    private String notifyEmail;
     private Date updated;
     private PersonAuthority authority;
-    public static final String PROP_EMAIL = "email";
-    public static final String PROP_UPDATED = "updated";
-    public static final String PROP_AUTHORITY = "authority";
+    private String name;
 
     public Person() {
 
@@ -57,4 +56,20 @@ public class Person implements Serializable {
         return authority;
     }
 
+    public String getNotifyEmail() {
+        return notifyEmail;
+    }
+
+    public void setNotifyEmail(String notifyEmail) {
+        this.notifyEmail = notifyEmail;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+    
 }

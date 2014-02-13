@@ -3,7 +3,7 @@ package com.github.sitemindr.controller;
 import com.github.sitemindr.entity.PersonAuthority;
 import com.github.sitemindr.entity.Person;
 import com.github.sitemindr.entity.Site;
-import com.github.sitemindr.service.SiteService;
+import com.github.sitemindr.util.Notifier;
 import com.github.sitemindr.util.PingResult;
 import com.github.sitemindr.util.Pinger;
 import com.google.appengine.api.users.User;
@@ -11,7 +11,9 @@ import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.googlecode.objectify.ObjectifyService;
 import static com.googlecode.objectify.ObjectifyService.ofy;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,8 +33,7 @@ public class CronController {
     public String httpGet(@PathVariable String website, ModelMap model) {
         if (isUserAthorized()) {
             PingResult result = Pinger.doHttpGet(website, 10);
-            SiteService.updateSite(website, result.isOk());
-            System.out.println(website);
+            updateSite(website, result.isOk());
             model.addAttribute("message", result.getMessage());
         }
         return "list";
@@ -40,13 +41,11 @@ public class CronController {
 
     @RequestMapping(value = "/httpgetall", method = RequestMethod.GET)
     public String httpGetAll(ModelMap model) {
-        if (isUserAthorized()) {
-            for (String url : SiteService.getSites()) {
-                PingResult result = Pinger.doHttpGet(url, 5);
-                SiteService.updateSite(url, result.isOk());
-                System.out.println(url);
-                model.addAttribute("message", result.getMessage());
-            }
+        for (String url : getSites()) {
+            PingResult result = Pinger.doHttpGet(url, 5);
+            updateSite(url, result.isOk());
+            System.out.println(url);
+            model.addAttribute("message", result.getMessage());
         }
         return "list";
     }
@@ -81,4 +80,52 @@ public class CronController {
         return result;
     }
 
+    private List<String> getSites() {
+        List<String> list = new ArrayList<>();
+        Iterable<Site> sites = ofy().load().type(Site.class);
+        for (Site site : sites) {
+            list.add(site.getFqdn());
+        }
+        return list;
+    }
+
+    private List<Person> getInterestedParties() {
+        List<Person> list = new ArrayList<>();
+        Iterable<Person> persons = ofy().load().type(Person.class);
+        for (Person person : persons) {
+            list.add(person);
+        }
+        return list;
+    }
+
+    private void updateSite(String url, Boolean available) {
+
+        Site site = ofy().load().type(Site.class).id(url).now();
+        boolean wasAvailable = false;
+        if (site == null) {
+            site = new Site();
+            site.setFqdn(url);
+            updateInterestedParty("test", "test@here.com", "test@here.com");
+        } else {
+            wasAvailable = site.isAvailable();
+        }
+        site.setAvailable(available);
+        if (available) {
+            site.setLastAvailable(new Date());
+        } else {
+            site.setLastUnavailable(new Date());
+        }
+        ofy().save().entity(site).now();
+        if ((available && !wasAvailable) || (!available && wasAvailable)) {
+            Notifier.notifyInterestedParties(site, getInterestedParties());
+        }
+    }
+
+    private void updateInterestedParty(String name, String email, String notifyEmail) {
+        Person person = new Person();
+        person.setName(name);
+        person.setEmail(email);
+        person.setNotifyEmail(notifyEmail);
+        ofy().save().entity(person).now();
+    }
 }

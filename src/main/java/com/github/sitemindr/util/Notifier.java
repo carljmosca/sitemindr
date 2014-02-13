@@ -7,8 +7,8 @@ package com.github.sitemindr.util;
 
 import com.github.sitemindr.entity.Person;
 import com.github.sitemindr.entity.Site;
-import static com.googlecode.objectify.util.LogUtils.msg;
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -20,13 +20,16 @@ import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
+
+
 /**
  *
  * @author moscac
  */
 public class Notifier {
 
-    public static void notifyInterestedParties(Site site) {
+    public static void notifyInterestedParties(Site site, List<Person> interestedParties) {
+
         Properties props = new Properties();
         Session session = Session.getDefaultInstance(props, null);
 
@@ -34,15 +37,17 @@ public class Notifier {
 
         try {
             Message msg = new MimeMessage(session);
-            msg.setFrom(new InternetAddress("sitemindr@appspot.com", "sitemindr"));
-            for (Person person : site.getInterestedParties()) {
-                msg.addRecipient(Message.RecipientType.BCC,
-                        new InternetAddress(person.getNotifyEmail(), person.getName()));
+            msg.setFrom(new InternetAddress("carl_mosca@vaeb.uscourts.gov", "sitemindr"));
+            for (Person person : interestedParties) {
+                if (person.getNotifyEmail() != null) {
+                    msg.addRecipient(Message.RecipientType.BCC,
+                            new InternetAddress(person.getNotifyEmail(), person.getName()));
+                }
             }
             msg.setSubject(site.getFqdn() + " status");
             msg.setText(msgBody);
             Transport.send(msg);
-
+            Logger.getLogger(Notifier.class.getName()).log(Level.INFO, "email sent: {0}", msg.getSubject());
         } catch (AddressException e) {
             Logger.getLogger(Notifier.class.getName()).log(Level.SEVERE, null, e);
         } catch (MessagingException | UnsupportedEncodingException e) {

@@ -27,16 +27,10 @@ public class Site implements Serializable {
     @Id
     private String fqdn;
     private boolean available;
-    private Date lastAvaialable;
+    private Date lastAvailable;
     private Date lastUnavailable;
-    private List<Person> interestedParties;
-    public static final String PROP_FQDN = "fqdn";
-    public static final String PROP_AVAILABLE = "available";
-    public static final String PROP_LAST_AVAILABLE = "lastAvailable";
-    public static final String PROP_LAST_UNAVAILABLE = "lastUnavailable";
 
     public Site() {
-        interestedParties = new ArrayList<>(0);
     }
     
     public String getFqdn() {
@@ -55,12 +49,12 @@ public class Site implements Serializable {
         this.available = available;
     }
 
-    public Date getLastAvaialable() {
-        return lastAvaialable;
+    public Date getLastAvailable() {
+        return lastAvailable;
     }
 
-    public void setLastAvaialable(Date lastAvaialable) {
-        this.lastAvaialable = lastAvaialable;
+    public void setLastAvailable(Date lastAvailable) {
+        this.lastAvailable = lastAvailable;
     }
 
     public Date getLastUnavailable() {
@@ -71,12 +65,4 @@ public class Site implements Serializable {
         this.lastUnavailable = lastUnavailable;
     }
 
-    public List<Person> getInterestedParties() {
-        return interestedParties;
-    }
-
-    public void setInterestedParties(List<Person> interestedParties) {
-        this.interestedParties = interestedParties;
-    }
-  
 }
