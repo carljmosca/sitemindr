@@ -54,7 +54,7 @@
                         </div>
                         <div class="navbar">
                             <ul class="nav navbar-nav">
-                                <li class="active">
+                                <li>
 
                                     <%
                                         UserService userService = UserServiceFactory.getUserService();
@@ -75,6 +75,9 @@
                                     %>
 
                                 </li>
+                            </ul>
+                            <% if (user != null) { %>
+                            <ul class="nav navbar-nav navbar-right">
                                 <li class="dropdown">
                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Configuration<b class="caret"></b></a>
                                     <ul class="dropdown-menu">
@@ -83,10 +86,11 @@
                                     </ul>
                                 </li>
                             </ul>
+                            <% } %>
                         </div><!--/.nav-collapse -->
                     </div><!--/.container-fluid -->
                 </div>
-
+                <% if (user != null) { %>
                 <!-- Main component for a primary marketing message or call to action -->
                 <div class="jumbotron">
                     <h2>Sites</h2>
@@ -100,21 +104,19 @@
                     <p>There are no sites configured</p>
                     <%
                     } else {
-                        if (user != null) {
-                            for (Entity site : sites) {
-                                pageContext.setAttribute("name", site.getKey().getName());
-                                pageContext.setAttribute("available", ("true".equals(site.getProperty("available").toString()) ? "" : "not ") + "available");
+                        for (Entity site : sites) {
+                            pageContext.setAttribute("name", site.getKey().getName());
+                            pageContext.setAttribute("available", ("true".equals(site.getProperty("available").toString()) ? "" : "not ") + "available");
 
                     %>
                     <p>${fn:escapeXml(name)} - ${fn:escapeXml(available)}</p>
                     <%             }
-                            }
                         }
                     %>
 
                     </p>
                 </div>
-
+                <% }%>
             </div> <!-- /container -->
 
 
