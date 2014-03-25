@@ -17,7 +17,7 @@
     </pluginRepositories>
 
     <properties>
-        <appengine.app.version>1</appengine.app.version>
+        <appengine.app.version>3</appengine.app.version>
         <appengine.target.version>1.8.4</appengine.target.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <spring.version>3.2.5.RELEASE</spring.version>
@@ -28,6 +28,11 @@
         <dependency>
             <groupId>com.google.appengine</groupId>
             <artifactId>appengine-api-1.0-sdk</artifactId>
+            <version>${appengine.target.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.appengine</groupId>
+            <artifactId>appengine-endpoints</artifactId>
             <version>${appengine.target.version}</version>
         </dependency>
         <dependency>
