@@ -49,4 +49,20 @@
             <goal>appengine:update_queues</goal>
         </goals>
     </action>
+    <action>
+            <actionName>debug</actionName>
+            <packagings>
+                <packaging>war</packaging>
+                <packaging>ear</packaging>
+                <packaging>ejb</packaging>
+            </packagings>
+            <goals>
+                <goal>package</goal>
+                <goal>appengine:devserver</goal>
+            </goals>
+            <properties>
+                <netbeans.deploy.debugmode>true</netbeans.deploy.debugmode>
+                <netbeans.deploy>true</netbeans.deploy>
+            </properties>
+        </action>
 </actions>
