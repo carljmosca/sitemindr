@@ -1,0 +1,199 @@
+{
+  "extends" : "thirdParty.api",
+  "abstract" : false,
+  "root" : "https://myapp.appspot.com/_ah/api",
+  "name" : "siteendpoint",
+  "version" : "v1",
+  "defaultVersion" : false,
+  "adapter" : {
+    "bns" : "https://myapp.appspot.com/_ah/spi",
+    "deadline" : 10.0,
+    "type" : "lily"
+  },
+  "auth" : {
+    "allowCookieAuth" : false
+  },
+  "frontendLimits" : {
+    "unregisteredUserQps" : -1,
+    "unregisteredQps" : -1,
+    "unregisteredDaily" : -1,
+    "rules" : [ ]
+  },
+  "cacheControl" : {
+    "type" : "no-cache",
+    "maxAge" : 0
+  },
+  "ownerDomain" : "github.com",
+  "ownerName" : "github.com",
+  "packagePath" : "sitemindr.service",
+  "methods" : {
+    "siteendpoint.getSite" : {
+      "path" : "site/{id}",
+      "httpMethod" : "GET",
+      "authLevel" : "NONE",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ ],
+      "clientIds" : [ "292824132082.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.github.sitemindr.service.SiteEndpoint.getSite",
+      "request" : {
+        "parameters" : {
+          "id" : {
+            "type" : "string",
+            "required" : true
+          }
+        },
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
+    "siteendpoint.updateSite" : {
+      "path" : "site",
+      "httpMethod" : "PUT",
+      "authLevel" : "NONE",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ ],
+      "clientIds" : [ "292824132082.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.github.sitemindr.service.SiteEndpoint.updateSite",
+      "request" : {
+        "body" : "autoTemplate(backendRequest)",
+        "bodyName" : "resource"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
+    "siteendpoint.listSite" : {
+      "path" : "site",
+      "httpMethod" : "GET",
+      "authLevel" : "NONE",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ ],
+      "clientIds" : [ "292824132082.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.github.sitemindr.service.SiteEndpoint.listSite",
+      "request" : {
+        "parameters" : {
+          "cursor" : {
+            "type" : "string",
+            "required" : false
+          },
+          "limit" : {
+            "type" : "int32",
+            "required" : false
+          }
+        },
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
+    "siteendpoint.removeSite" : {
+      "path" : "site/{id}",
+      "httpMethod" : "DELETE",
+      "authLevel" : "NONE",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ ],
+      "clientIds" : [ "292824132082.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.github.sitemindr.service.SiteEndpoint.removeSite",
+      "request" : {
+        "parameters" : {
+          "id" : {
+            "type" : "string",
+            "required" : true
+          }
+        },
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "empty"
+      }
+    },
+    "siteendpoint.insertSite" : {
+      "path" : "site",
+      "httpMethod" : "POST",
+      "authLevel" : "NONE",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ ],
+      "clientIds" : [ "292824132082.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.github.sitemindr.service.SiteEndpoint.insertSite",
+      "request" : {
+        "body" : "autoTemplate(backendRequest)",
+        "bodyName" : "resource"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    }
+  },
+  "descriptor" : {
+    "schemas" : {
+      "Site" : {
+        "id" : "Site",
+        "type" : "object",
+        "properties" : {
+          "fqdn" : {
+            "type" : "string"
+          },
+          "available" : {
+            "type" : "boolean"
+          },
+          "lastAvailable" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "lastUnavailable" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }
+      },
+      "CollectionResponse_Site" : {
+        "id" : "CollectionResponse_Site",
+        "type" : "object",
+        "properties" : {
+          "items" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "Site"
+            }
+          },
+          "nextPageToken" : {
+            "type" : "string"
+          }
+        }
+      }
+    },
+    "methods" : {
+      "com.github.sitemindr.service.SiteEndpoint.getSite" : {
+        "response" : {
+          "$ref" : "Site"
+        }
+      },
+      "com.github.sitemindr.service.SiteEndpoint.updateSite" : {
+        "request" : {
+          "$ref" : "Site"
+        },
+        "response" : {
+          "$ref" : "Site"
+        }
+      },
+      "com.github.sitemindr.service.SiteEndpoint.listSite" : {
+        "response" : {
+          "$ref" : "CollectionResponse_Site"
+        }
+      },
+      "com.github.sitemindr.service.SiteEndpoint.removeSite" : {
+      },
+      "com.github.sitemindr.service.SiteEndpoint.insertSite" : {
+        "request" : {
+          "$ref" : "Site"
+        },
+        "response" : {
+          "$ref" : "Site"
+        }
+      }
+    }
+  }
+}
