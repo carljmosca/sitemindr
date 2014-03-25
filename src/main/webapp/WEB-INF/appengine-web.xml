@@ -6,7 +6,7 @@
 
     <system-properties>
         <property name="java.util.logging.config.file" value="WEB-INF/logging.properties"/>
-        <property name="sitemindr.notification.fromemail" value="notifications@sitemindr.appspot.com" />
+        <property name="sitemindr.notification.fromemail" value="notification@sitemindr.appspotmail.com" />
     </system-properties>
     
 </appengine-web-app>

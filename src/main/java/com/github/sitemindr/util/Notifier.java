@@ -37,7 +37,7 @@ public class Notifier {
 
         try {
             Message msg = new MimeMessage(session);
-            String fromEmailAddress = System.getenv("sitemindr.notification.fromemail");
+            String fromEmailAddress = System.getProperty("sitemindr.notification.fromemail");
             msg.setFrom(new InternetAddress(fromEmailAddress, "sitemindr"));
             for (Person person : interestedParties) {
                 if (person.getNotifyEmail() != null) {
