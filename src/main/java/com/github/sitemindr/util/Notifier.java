@@ -37,14 +37,15 @@ public class Notifier {
 
         try {
             Message msg = new MimeMessage(session);
-            msg.setFrom(new InternetAddress("carl_mosca@vaeb.uscourts.gov", "sitemindr"));
+            String fromEmailAddress = System.getenv("sitemindr.notification.fromemail");
+            msg.setFrom(new InternetAddress(fromEmailAddress, "sitemindr"));
             for (Person person : interestedParties) {
                 if (person.getNotifyEmail() != null) {
                     msg.addRecipient(Message.RecipientType.BCC,
                             new InternetAddress(person.getNotifyEmail(), person.getName()));
                 }
             }
-            msg.setSubject(site.getFqdn() + " status");
+            msg.setSubject(site.getFqdn() + " status: " + (site.isAvailable() ? "OK" : "may be unavailable"));
             msg.setText(msgBody);
             Transport.send(msg);
             Logger.getLogger(Notifier.class.getName()).log(Level.INFO, "email sent: {0}", msg.getSubject());
