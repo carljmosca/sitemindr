@@ -42,7 +42,7 @@ public class CronController {
     @RequestMapping(value = "/httpgetall", method = RequestMethod.GET)
     public String httpGetAll(ModelMap model) {
         for (String url : getSites()) {
-            PingResult result = Pinger.doHttpGet(url, 5);
+            PingResult result = Pinger.doHttpGet(url, 10);
             updateSite(url, result.isOk());
             System.out.println(url);
             model.addAttribute("message", result.getMessage());
@@ -62,6 +62,9 @@ public class CronController {
     }
 
     private PersonAuthority userAuthority() {
+        if (ofy().load().type(Person.class).count() <= 1) {
+            return PersonAuthority.ADMINISTRATOR;
+        }
         PersonAuthority result = PersonAuthority.NONE;
         UserService userService = UserServiceFactory.getUserService();
         User currentUser = userService.getCurrentUser();
@@ -128,4 +131,5 @@ public class CronController {
         person.setNotifyEmail(notifyEmail);
         ofy().save().entity(person).now();
     }
+
 }
