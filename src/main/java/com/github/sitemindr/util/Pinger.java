@@ -22,7 +22,7 @@ import java.net.URL;
  */
 public class Pinger {
 
-    private final static int MAX_TIMEOUT = 120;
+    private final static int MAX_TIMEOUT = 30;
 
     public static PingResult doHttpGet(String address, int timeoutInSeconds) {
         PingResult result = new PingResult();
@@ -31,6 +31,9 @@ public class Pinger {
         BufferedReader rd;
         String line;
         StringBuilder data = new StringBuilder();
+        if (timeoutInSeconds <= 0) {
+            timeoutInSeconds = 10;
+        }
         try {
             url = new URL(address.toLowerCase().startsWith("http") ? address : "http://" + address);
             conn = (HttpURLConnection) url.openConnection();
@@ -43,18 +46,18 @@ public class Pinger {
                 data.append(line);
             }
             result.setOk(true);
-            result.setMessage("HTTP GET " + address +  " read " + data.length() + " bytes in " + (endTime - startTime) + "ms");
+            result.setMessage("HTTP GET " + address + " read " + data.length() + " bytes in " + (endTime - startTime) + "ms");
             rd.close();
-            
+
         } catch (IOException e) {
             result.setMessage(e.getMessage());
         }
         return result;
     }
-    
+
     private void saveSite(String address) {
         Site siteEntity = new Site();
         siteEntity.setFqdn(address);
-        
+
     }
 }

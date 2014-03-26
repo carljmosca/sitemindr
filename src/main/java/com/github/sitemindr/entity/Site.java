@@ -13,9 +13,7 @@ package com.github.sitemindr.entity;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 /**
  *
@@ -29,6 +27,8 @@ public class Site implements Serializable {
     private boolean available;
     private Date lastAvailable;
     private Date lastUnavailable;
+    private String fromEmail;
+    private int waitTimeout;
 
     public Site() {
     }
@@ -63,6 +63,22 @@ public class Site implements Serializable {
 
     public void setLastUnavailable(Date lastUnavailable) {
         this.lastUnavailable = lastUnavailable;
+    }
+
+    public String getFromEmail() {
+        return fromEmail;
+    }
+
+    public void setFromEmail(String fromEmail) {
+        this.fromEmail = fromEmail;
+    }
+
+    public int getWaitTimeout() {
+        return waitTimeout;
+    }
+
+    public void setWaitTimeout(int waitTimeout) {
+        this.waitTimeout = waitTimeout;
     }
 
 }

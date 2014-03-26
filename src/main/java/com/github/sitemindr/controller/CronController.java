@@ -14,6 +14,8 @@ import static com.googlecode.objectify.ObjectifyService.ofy;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @RequestMapping("/cron")
 public class CronController {
 
+    private static Logger logger = Logger.getLogger(Notifier.class.getName());
     static {
         ObjectifyService.register(Person.class);
         ObjectifyService.register(Site.class);
@@ -41,10 +44,10 @@ public class CronController {
 
     @RequestMapping(value = "/httpgetall", method = RequestMethod.GET)
     public String httpGetAll(ModelMap model) {
-        for (String url : getSites()) {
-            PingResult result = Pinger.doHttpGet(url, 10);
-            updateSite(url, result.isOk());
-            System.out.println(url);
+        for (Site site : getSites()) {
+            PingResult result = Pinger.doHttpGet(site.getFqdn(), site.getWaitTimeout());
+            updateSite(site.getFqdn(), result.isOk());
+            System.out.println(site.getFqdn());
             model.addAttribute("message", result.getMessage());
         }
         return "list";
@@ -83,11 +86,11 @@ public class CronController {
         return result;
     }
 
-    private List<String> getSites() {
-        List<String> list = new ArrayList<>();
+    private List<Site> getSites() {
+        List<Site> list = new ArrayList<>();
         Iterable<Site> sites = ofy().load().type(Site.class);
         for (Site site : sites) {
-            list.add(site.getFqdn());
+            list.add(site);
         }
         return list;
     }
@@ -103,6 +106,7 @@ public class CronController {
 
     private void updateSite(String url, Boolean available) {
 
+        Logger.getLogger(Notifier.class.getName()).log(Level.INFO, "updating {0}", url);
         Site site = ofy().load().type(Site.class).id(url).now();
         boolean wasAvailable = false;
         if (site == null) {
@@ -112,6 +116,8 @@ public class CronController {
         } else {
             wasAvailable = site.isAvailable();
         }
+        logger.log(Level.INFO, "{0} was {1}available", new Object[]{url, wasAvailable ? "" : "not "});
+        logger.log(Level.INFO, "{0} is {1}available", new Object[]{url, site.isAvailable() ? "" : "not "});
         site.setAvailable(available);
         if (available) {
             site.setLastAvailable(new Date());
@@ -125,6 +131,7 @@ public class CronController {
     }
 
     private void updateInterestedParty(String name, String email, String notifyEmail) {
+        logger.log(Level.INFO, "updating interested party: {0}", name);
         Person person = new Person();
         person.setName(name);
         person.setEmail(email);

@@ -20,16 +20,17 @@ import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
-
-
 /**
  *
  * @author moscac
  */
 public class Notifier {
+    
+    private static final Logger logger = Logger.getLogger(Notifier.class.getName());
 
     public static void notifyInterestedParties(Site site, List<Person> interestedParties) {
 
+        logger.log(Level.INFO, "notifying parties of {0} status", site);
         Properties props = new Properties();
         Session session = Session.getDefaultInstance(props, null);
 
@@ -37,7 +38,10 @@ public class Notifier {
 
         try {
             Message msg = new MimeMessage(session);
-            String fromEmailAddress = System.getProperty("sitemindr.notification.fromemail");
+            String fromEmailAddress = "carl_mosca@vaeb.uscourts.gov";
+//            if (site.getFromEmail() != null && site.getFromEmail().trim().length() > 0)
+//                fromEmailAddress = site.getFromEmail().trim();
+            logger.log(Level.INFO, "sending email from {0}", fromEmailAddress);
             msg.setFrom(new InternetAddress(fromEmailAddress, "sitemindr"));
             for (Person person : interestedParties) {
                 if (person.getNotifyEmail() != null) {
@@ -48,11 +52,11 @@ public class Notifier {
             msg.setSubject(site.getFqdn() + " status: " + (site.isAvailable() ? "OK" : "may be unavailable"));
             msg.setText(msgBody);
             Transport.send(msg);
-            Logger.getLogger(Notifier.class.getName()).log(Level.INFO, "email sent: {0}", msg.getSubject());
+            logger.log(Level.INFO, "email sent: {0}", msg.getSubject());
         } catch (AddressException e) {
-            Logger.getLogger(Notifier.class.getName()).log(Level.SEVERE, null, e);
+            logger.log(Level.SEVERE, null, e);
         } catch (MessagingException | UnsupportedEncodingException e) {
-            Logger.getLogger(Notifier.class.getName()).log(Level.SEVERE, null, e);
+            logger.log(Level.SEVERE, null, e);
         }
     }
 
