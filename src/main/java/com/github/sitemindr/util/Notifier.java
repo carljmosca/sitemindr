@@ -38,9 +38,9 @@ public class Notifier {
 
         try {
             Message msg = new MimeMessage(session);
-            String fromEmailAddress = "carl_mosca@vaeb.uscourts.gov";
-//            if (site.getFromEmail() != null && site.getFromEmail().trim().length() > 0)
-//                fromEmailAddress = site.getFromEmail().trim();
+            String fromEmailAddress = "notification@sitemindr.appspotmail.com";
+            if (site.getFromEmail() != null && site.getFromEmail().trim().length() > 0)
+                fromEmailAddress = site.getFromEmail().trim();
             logger.log(Level.INFO, "sending email from {0}", fromEmailAddress);
             msg.setFrom(new InternetAddress(fromEmailAddress, "sitemindr"));
             for (Person person : interestedParties) {
